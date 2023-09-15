@@ -163,7 +163,7 @@ tags.div(
         class_="bottom"
     ),
 
-    class_="h-100 p-4 rounded-3 ads-container"
+    class_="h-100 p-2 p-md-4 rounded-3 ads-container"
 )
 ```
 :::
@@ -192,7 +192,7 @@ tags.div(
         ),
 
         tags.div(
-            tags.p("Introducing ", tags.span("Our Sneakers Super Sales!!", class_="major text-decoration-underline"), class_="top"),
+            tags.p("Introducing", tags.span("Our Sneakers Super Sales!!", class_="major text-decoration-underline"), class_="top"),
             tags.p("Are you ready to elevate your style and comfort game? Look no further because the icon is here!", class_="minor"),
             tags.div(
                 tags.p(
@@ -221,7 +221,7 @@ tags.div(
         class_="bottom"
     ),
 
-    class_="h-100 p-5 rounded-3 pas-container"
+    class_="h-100 p-2 p-md-5 rounded-3 pas-container"
 )
 ```
 :::
