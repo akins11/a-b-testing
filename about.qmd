@@ -89,7 +89,7 @@ tags.div(
         tags.h4("Contribution: "),
         tags.p(
             "If you would like to contribute and improve this project, create a fork of the GitHub repository at ",
-            tags.span(tags.a("https://www.github.com/akins/a-b-testing", href="https://www.github.com/akins/a-b-testing"))
+            tags.span(tags.a("https://github.com/akins11/a-b-testing", href="https://github.com/akins11/a-b-testing"))
         )
     ),
 
