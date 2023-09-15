@@ -1,0 +1,678 @@
+---
+echo: false
+jupyter: python3
+---
+
+
+```{python}
+#| message: false
+#| warning: false
+
+from pandas import DataFrame, read_csv
+
+import scipy.stats as stats
+from scipy.stats import shapiro
+from htmltools import tags
+from faicons import icon_svg
+
+from c_function import *
+```
+
+```{python}
+
+df = read_csv("data/marketing_AB.csv")
+
+df = clean_data(df)
+
+# Test Group 
+test_group = df.query("group == 'ad'")
+
+# Control Group
+control_group = df.query("group == 'psa'")
+```
+
+
+<div class='px-4 px-md-5 py-4 d-flex justify-content-between align-items-center'>
+ <h4 class="display-5">A/B Testing<h4>
+ <a class="home-link" href="index.html">Home</a>
+</div>
+
+::: {.px-4 .px-md-5 .py-4}
+
+<p class="exp-text-color">
+After a thorough exploration and summary of the performance metrics of both groups on the metrics page, we will leverage these insights to conduct the necessary tests. This will enable us to comprehensively assess the significance of these insights in relation to the conversion rates of both groups.
+</p>
+
+:::
+
+
+<div class="ab-divider"></div>
+
+<!---- Hypothesis section ------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+::: {.grid}
+
+<!---- Null Column -------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    tags.div(
+        tags.p(
+            tags.span("Null", class_="type"), 
+            tags.span(" Hypothesis:", class_="hyp"), 
+            tags.span(" (H0)", class_="sign"),
+
+            class_="text-white",
+        ),
+
+        class_="top text-white mb-4",
+    ),
+
+    tags.div(
+        tags.div(
+            tags.i(class_="bi bi-circle-fill pt-1 pe-1 pe-md-4"),
+            tags.p(
+            """
+            The null hypothesis is a statement that suggests there is no significant difference or effect caused by the change being tested.
+            """,
+
+            class_=""
+            ),
+
+            class_="d-flex justify-content-start align-items-start mb-1"
+        ),
+
+        tags.div(
+            tags.i(class_="bi bi-circle-fill pt-1 pe-1 pe-md-4"),
+            tags.p(
+                "The conversion rate of the `Test Group (Ads)` is equal to or less than the conversion rate of the `Control Group (PSA)`.",
+
+                class_="bold"
+            ),
+
+            class_="d-flex justify-content-start align-items-start mb-1"
+        ),
+
+        tags.div(
+            tags.i(class_="bi bi-circle-fill pt-1 pe-1 pe-md-4 fw"),
+            tags.p(
+                "Symbolically, it can be expressed as H0: Conversion rate of Group A = Conversion rate of Group B.",
+            ),
+            class_="d-flex justify-content-start align-items-start"
+        ),
+
+        class_="bottom"
+    ),
+
+    class_="h-100 p-4 text-white rounded-3 hypothesis null"
+)
+```
+
+:::
+<!---- End of Null Column ------------------------------------------------------------------->
+
+
+<!---- Alternative Column ------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    tags.div(
+        tags.p(
+            tags.span("Alternative", class_="type"), 
+            tags.span(" Hypothesis:", class_="hyp"), 
+            tags.span(" (Ha)", class_="sign"),
+
+            class_="text-white",
+        ),
+
+        class_="top text-white mb-4",
+    ),
+
+    tags.div(
+        tags.div(
+            tags.i(class_="bi bi-circle-fill pt-1 pe-1 pe-md-4"),
+            tags.p(
+            "The alternative hypothesis proposes that there is a statistically significant difference or effect resulting from the change being tested.",
+
+            class_=""
+            ),
+
+            class_="d-flex justify-content-start align-items-start mb-1"
+        ),
+
+        tags.div(
+            tags.i(class_="bi bi-circle-fill pt-1 pe-1 pe-md-4"),
+            tags.p(
+                "The conversion rate of the `Test Group (Ads)` is significantly greater that the conversion rate of the `Control Group (PSA)`.",
+
+                class_="bold"
+            ),
+
+            class_="d-flex justify-content-start align-items-start mb-1"
+        ),
+
+        tags.div(
+            tags.i(class_="bi bi-circle-fill pt-1 pe-1 pe-md-4"),
+            tags.p(
+                "Symbolically, it can be expressed as Ha: Conversion rate of Group A > Conversion rate of Group B.",
+            ),
+            class_="d-flex justify-content-start align-items-start"
+        ),
+
+        class_="bottom"
+    ),
+
+    class_="h-100 p-4 text-white rounded-3 hypothesis alternative"
+)
+```
+
+:::
+<!---- End of Alternative Column ------------------------------------------------------------>
+
+:::
+<!---- End of Grid --------------------------------------------------------------------------------->
+
+::: 
+<!---- End of Hypothesis section --------------------------------------------------------------------------->
+
+
+
+
+
+<div class="ab-divider"></div>
+
+
+
+
+
+
+<!---- Mean section ---------------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+<h3 class="display-6 mb-4">Conversion Rate</h3>
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+test_ms = mean_std(test_group)
+control_ms = mean_std(control_group)
+
+tags.div(
+    tags.div(
+        tags.div(
+            icon_svg("a", height="2.5rem", margin_left="0", margin_right="0"),
+
+            class_="icon-container"
+        ),
+
+        tags.div(class_="vertical-divider"),
+
+        tags.div(
+            tags.p("Mean: ", tags.span(test_ms[0])),
+            tags.p("Standard Deviation: ", tags.span(test_ms[1])),
+
+            class_="values"
+        ),
+
+        class_="d-flex justify-content-around align-items-center mb-4 ab-row test"
+    ),
+
+    tags.div(
+        tags.div(
+            icon_svg("b", height="2.5rem", margin_left="0", margin_right="0"),
+
+            class_="icon-container"
+        ),
+
+        tags.div(class_="vertical-divider"),
+
+        tags.div(
+            tags.p("Mean: ", tags.span(control_ms[0])),
+            tags.p("Standard Deviation: ", tags.span(control_ms[1])),
+
+            class_="values"
+        ),
+
+        class_="d-flex justify-content-around align-items-center ab-row control"
+    ),
+
+    class_="h-100 p-3 my-0 mx-auto mx-md-0 mean"
+)
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+info_card(
+    tags.p(
+        """ 
+        Following the strategic shift from a long-standing Public Service Announcement (PSA) to a new advertising campaign, After conducted an analysis of the impact on conversion. In the A (test) group, consisting of users exposed to the ads, we observed an encouraging average conversion rate of 0.026, accompanied by a standard deviation of  0.158. This group's response showcases the potential of our new approach.
+        """,
+        tags.br(),
+        """
+        Meanwhile, the B (control) group, comprising users who continued to view the PSA, exhibited an average conversion of 0.018, with a standard deviation of 0.132.
+        """,
+        class_="summary-text"
+    ),
+
+    "info-circle"
+)
+
+```
+
+:::
+
+:::
+<!---- End of Grid --------------------------------------------------------------------------------->
+
+```{python}
+
+tags.div(
+    tags.p(
+        """
+        These insights clarify the distinct performance of both groups, emphasizing the significance of the company's strategic shift in the pursuit of heightened sales. Analyzing these results, it's clear that the company's advertising efforts have set them on a path toward greater success and engagement with their user base.
+        """,
+        class_="exp-text-color"
+    ),
+
+    class_="mt-2 mt-md-4"
+)
+
+```
+
+:::
+<!---- End of Mean section ---------------------------------------------------------------------------------->
+
+
+
+
+<div class="ab-divider"></div>
+
+
+
+<!---- Bootstrap section ------------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+<h3 class="display-6 mb-3">Sample (Bootstrap)</h3>
+
+```{python}
+
+tags.div(
+    tags.p(
+        "Evidently, there is a substantial disparity in the sample size between the group exposed to the advertisement ", 
+        tags.span(tags.a("see metric page", href="metric.html")), ", comprising",
+        """
+          96% of the total, and the group that viewed the PSA, which consitutes a mere 4%. When there is such an imbalance in sample size between experimental and control groups, it can potentially introduce several statistical analysis challenges. 
+        """,
+
+        class_="exp-text-color"
+    ),
+
+    tags.p(
+        """
+        These imbalanced sample sizes can impact the statistical power of the analysis and the precision of the estimates. Specifically, the group with the larger sample size is likely to yield more precise estimates compared to the group with the smaller sample size. Therefore, in this scenario, it becomes crucial to consider strategies with approprate statistical techniques capable of addressing imbalanced sample size, including weighted analysis or resampling methods like bootstrapping.
+        """,
+
+        class_="exp-text-color"
+    ),
+
+    class_="mb-5"
+)
+```
+
+```{python}
+boot_df = DataFrame()
+```
+
+::: {.grid}
+
+<!---- Test Group ------------------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+#| message: false
+#| warning: false
+#| cache: true
+#| fig-alt: "A line plot on the distribution of the sampled test group"
+
+boot_ads = []
+
+for i in range(1000):
+    boot_mean = test_group.sample(frac=1, replace=True)["converted"].mean()
+
+    boot_ads.append(boot_mean)
+
+
+boot_df["ads_converted"] = boot_ads
+
+plot_bootstrap_samples(boot_df, "ads_converted")
+```
+
+:::
+
+<!---- Control Group ------------------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+#| message: false
+#| warning: false
+#| cache: true
+#| fig-alt: "A line plot on the distribution of the sampled control group"
+
+boot_psa = []
+
+for i in range(1000):
+    boot_mean = control_group.sample(frac=1, replace=True)["converted"].mean()
+
+    boot_psa.append(boot_mean)
+
+
+boot_df["psa_converted"] = boot_psa
+
+plot_bootstrap_samples(boot_df, "psa_converted")
+```
+
+:::
+
+:::
+<!---- End of Grid --------------------------------------------------------------------------------->
+
+:::
+<!---- End of Bootstrap section ------------------------------------------------------------------------------->
+
+
+
+
+<div class="ab-divider"></div>
+
+
+<!---- Discussion section ------------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+```{python}
+
+info_card(
+    tags.p(
+        """
+        Following the creation of numerous bootstrap samples and subsequent calculation of average conversion rates for both the test and control groups, an examination of the depicted distributions and density plots reveals a characteristic bell curve pattern, strongly suggesting a normal distribution.
+        """,
+        tags.br(),
+        """
+        To further validate the normality assumption of our samples, a Shapiro-Wilk test was conducted. This test is employed to assess whether the test and control conversion samples adheres to a normal distribution. In this context, the null hypothesis posits that the data follows a normal distribution, while the alternative hypothesis suggests otherwise.
+        """,
+        tags.br(),
+        """
+        The results of the test yielded p-values of 0.38 for the test group and 0.84 for the control group samples, both of which surpass the significance level of 0.05. Consequently, we retain the null hypothesis, signifying that the sampled distributions exhibit normality.
+        """,
+        tags.br(),
+        """
+        This affirmation allows us to confidently apply statistical tests, as they rely on the fundamental assumption of normality.
+        """,
+        class_="summary-text"
+    ),
+
+    "info-circle"
+)
+
+```
+
+:::
+
+<!---- End of Discussion section ------------------------------------------------------------------------------->
+
+
+
+
+<div class="ab-divider"></div>
+
+
+
+
+<!---- Test section -------------------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+<h3 class="display-6 mb-5">T-test</h3>
+
+::: {.grid}
+
+<!---- Output column ------------------------------------------------------------------>
+::: {.g-col-12 .g-col-md-4}
+
+```{python}
+
+t_stat, p_value = stats.ttest_ind(
+    boot_df["ads_converted"], 
+    boot_df["psa_converted"], 
+    alternative="greater", 
+    equal_var=False
+)
+
+
+```
+
+```{python}
+
+tags.div(
+    tags.div(
+        tags.div(tags.p("Test-statistics:"), class_="title"),
+
+        tags.div(tags.p(round(t_stat, 3)), class_="value"),
+
+        class_="tt-row"
+    ),
+
+    tags.div(
+        tags.div(tags.p("P-value:"), class_="title"),
+
+        tags.div(tags.p(f"{p_value}00.."), class_="value"),
+
+        class_="tt-row"
+    ),
+
+    class_="t-test"
+)
+
+```
+
+:::
+
+
+<!---- Summary column ----------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-8}
+
+<p class="lead">
+
+```{python}
+
+info_card(
+    tags.p(
+        f"""
+        The T-statistic of approximately {round(t_stat, 3)} which serves as indicator of the magnitude of the difference between the test and control groups is high enough, indicating a subtantial difference between the groups. While the P-value which is < 0.05 (significate level), is exceptionally low small, signifying an extremely low likelihood of observing this level of difference by random chance alone.
+        """,
+        class_="summary-text lg"
+    ),
+    
+    "info-lg"
+)
+
+```
+
+</p>
+
+:::
+
+:::
+<!---- End of Grid --------------------------------------------------------------------------------->
+
+:::
+<!---- End of Test section ------------------------------------------------------------------------------------->
+
+<br>
+<br>
+
+
+<!---- Communication section ----------------------------------------------------------------------------------->
+<div class="ab-divider"></div>
+
+
+
+::: {.px-4 .px-md-5 .py-4} 
+
+```{python}
+
+tags.div(
+    tags.h3("Evaluation", class_="display-6 mb-3"),
+
+    tags.div(
+        tags.i(class_="bi bi-tag-fill"),
+        tags.p(
+            """
+            Since the p-value is significantly less than the chosen significance level (0.05), the null hypothesis is decisively rejected.
+            """,
+            class_="exp-text-color"
+        ),
+        class_="row-item mb-1"
+    ),
+
+    tags.div(
+        tags.i(class_="bi bi-tag-fill alt"),
+        tags.p(
+            """
+            This provides strong evidence in favor of the alternative hypothesis, indicating that there is a statistically significant difference between the test group and the control group being compared.
+            """,
+
+            class_="f-weight exp-text-color",
+        ),
+        class_="row-item mb-2"
+    ),
+
+    tags.p(
+        """
+        To summarize this, the t-test results reveal a statistically significant difference between the test (users with Ads views) and control group (users with PSA views), with the t-statistic and p-value pointing to a subtantial distinction.
+        """,
+        tags.span(
+            """
+            This indicates that the advertisement has a significant impact on the conversion rate compared to the public service announcement.
+            """,
+            class_="f-weight exp-text-color"
+        ),
+
+        class_="mt-1 exp-text-color"
+    ),
+
+    class_="evaluation"
+)
+
+```
+
+```{python}
+
+tags.div(
+    tags.div(
+        tags.h3("Recommendation", class_="display-6 text-white mb-3 title"),
+        tags.div(tags.i(class_="bi bi-lightbulb"), class_="icon-container"),
+
+        class_="header"
+    ),
+
+    tags.p(
+        """
+        Following the evaluation of the significance indicating a higher conversion rate for the ads, here are three key recommendations:
+        """,
+
+        class_="mb-2"
+    ),
+
+    tags.div(
+        tags.p(tags.i(class_="bi bi-tag space"), tags.span("Optimize Ad Placement Strategy:", class_="f-weight")),
+        tags.p(
+            """
+            The analysis indicates that the advertisement significantly outperforms the PSA in terms of conversion rate. To maximize this advantage, the company should consider strategic placement of ads during peak user engagement periods, based on the insights gathered regarding daily and hourly views. By aligning ad exposure with when users are most active, the company can enhance the chances of conversions and improve ROI.
+            """
+        ),
+
+        class_="item"
+    ),
+
+    tags.div(
+        tags.p(tags.i(class_="bi bi-tag space"), tags.span("Segmentation for Targeted Marketing:", class_="f-weight")),
+        tags.p(
+            """
+            Identify user groups that responded exceptionally well to the ads and tailor marketing strategies specifically for them. Understanding the demographics and behaviors of these high-conversion groups can help refine the message and target, thus boosting conversion rates.
+            """
+        ),
+
+        class_="item"
+    ),
+
+    tags.div(
+        tags.p(tags.i(class_="bi bi-tag space"), tags.span("Continuous Monitoring and Adaptation:", class_="f-weight")),
+        tags.p(
+            """
+            While the analysis provides compelling evidence of the ads' positive impact, to maintain and build upon these gains, it's crucial for the company to implement continuous monitoring of user behavior and adapt marketing strategies accordingly. Stay agile in responding to changing trends, user preferences, and competition to ensure sustained growth in conversion rates.
+            """
+        ),
+
+        class_="item"
+    ),
+
+    tags.p(
+        """
+        By implementing these recommendations, success in the advertising efforts can be capitalized and proper foundation layed for ongoing improvements and enhanced conversion rates.
+        """,
+
+        class_="mt-2"
+    ),
+
+    class_="recommendation"
+)
+
+```
+
+<br>
+<br>
+<br>
+
+<!---- Navigation Links ----------------------------------------------------------------------------->
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6 .page-link-container}
+
+```{python}
+
+page_link("Metric & Analysis", "metric.html", "bi bi-easel3-fill")
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-6 .page-link-container}
+
+```{python}
+
+page_link("About", "about.html", "bi bi-file-earmark-text")
+
+```
+
+:::
+
+:::
+<!---- End of Navigation Links ----------------------------------------------------------------------->
+
+
+:::
+<!---- End of Communication section ------------------------------------------------------------------------------>
+
+<br>

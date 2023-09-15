@@ -1,0 +1,19 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "A/B Experiment"
+
+format:
+  html:
+    theme: 
+      - Litera
+      - custom.scss
+    css: styles.css
+    mainfont: Inter
+    toc: true
+    page-layout: custom
+
+
+

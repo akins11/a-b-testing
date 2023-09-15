@@ -1,0 +1,363 @@
+---
+echo: false
+jupyter: python3
+---
+
+```{python}
+#| message: false
+#| warning: false
+
+from htmltools import tags
+```
+
+```{python}
+
+from c_function import info_card, page_link
+
+```
+
+::: {.px-4 .px-md-5 .py-4}
+<h3 class="display-4 mb-5">A/B Testing Conversion Rate Analysis</h3>
+
+```{python}
+
+tags.div(
+    tags.p(
+        """
+        In today's dynamic business landscape, the potential to unlock new avenues for customer engagement and revenue generation lies in the art of effective marketing and advertising. This belief has led a challenging journey, transitioning from a long-standing practice of relying on Public Service Announcements (PSAs) to a new approach of aggressively promoting their latest line of sneakers through advertisements on the company's community platforms.
+        """,
+        class_="home-intro exp-text-color mb-1",
+    ),
+
+    tags.p(
+        """
+        This shift represents more than just a change in strategy; it embodies the pursuit of untapped potential and the quest for growth. At this pivotal juncture, The company stands at the crossroads of uncertainty and opportunity. They are faced with a critical question: 
+        """,
+        class_="home-intro exp-text-color"
+    ),
+
+    tags.span(
+        ' "Did their strategic transition toward targeted advertising on their platform significantly bolster their sales and revenue figures?"',
+        class_="question lead"
+    ),
+)
+
+```
+
+:::
+
+<div class="ab-divider"></div>
+
+
+::: {.grid .px-4 .px-md-5 .py-4}
+
+<!------- Advert section ------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    tags.div(tags.i(class_="bi bi-tag"), class_="icon-container"),
+    tags.p("The Advertisment."),
+
+    class_="name-tag"
+)
+
+```
+
+```{python}
+tags.div(
+    tags.div(
+        tags.div(
+            tags.i(class_="bi bi-0-circle"),
+            class_="icon-container",
+        ),
+
+        tags.div(
+            tags.div(tags.p("Men")),
+            tags.div(tags.p("Women")),
+            tags.div(tags.p("Children")),
+            tags.div(tags.p("Collections")),
+
+            class_="for"
+        ),
+
+        tags.div(
+            tags.i(class_="bi bi-fullscreen"),
+            class_="icon-container",
+        ),
+
+        class_="top"
+    ),
+
+    tags.div(
+        tags.div(
+            tags.p("Every step is an opportunity to rise higher, push boundaries, and set new records.", class_="qt"),
+            tags.ul(
+                tags.li(
+                    tags.i(class_="bi bi-check2-circle"),
+                    tags.p("Legendary Comfort", class_="text"),
+                ),
+                tags.li(
+                    tags.i(class_="bi bi-check2-circle"),
+                    tags.p("Unrivaled Style", class_="text"),
+                ),
+                tags.li(
+                    tags.i(class_="bi bi-check2-circle"),
+                    tags.p("Performance Boost", class_="text"),
+                ),
+            ),
+
+            tags.div(
+                tags.div(tags.p("$754"), class_="price"),
+                tags.div(
+                    tags.div(
+                        tags.div(class_="middle-color"),
+                        class_="circle grey",
+                    ),
+                    tags.div(
+                        tags.div(class_="middle-color"),
+                        class_="circle blue",
+                    ),
+                    tags.div(
+                        tags.div(class_="middle-color"),
+                        class_="circle red",
+                    ),
+
+                    class_="shoe-color"
+                ),
+
+                class_="price-color"
+            ),
+
+            class_="left"
+        ),
+
+        tags.div(
+            tags.div(
+                tags.img(
+                    src="www/images/ads-img4.png",
+                    class_="image"
+                ),
+            ),
+
+            class_="right"
+        ),
+
+        class_="middle"
+    ),
+
+    tags.div(
+        tags.div(
+            tags.p("Sales Up 10% off", class_="text-uppercase")
+        ),
+
+        tags.div(
+            tags.button(
+                "Shop Now",
+                class_="btn btn-outline-light",
+                type="button",
+            ),
+        ),
+
+        class_="bottom"
+    ),
+
+    class_="h-100 p-4 rounded-3 ads-container"
+)
+```
+:::
+
+<!------- PSA section ---------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    tags.div(tags.i(class_="bi bi-tag"), class_="icon-container"),
+    tags.p("The Running Public Service Announcement."),
+
+    class_="name-tag"
+)
+
+```
+
+```{python}
+tags.div(
+    tags.div(
+        tags.div(
+            tags.i(class_="bi bi-volume-up"),
+
+            class_="icon-container"
+        ),
+
+        tags.div(
+            tags.p("Introducing ", tags.span("Our Sneakers Super Sales!!", class_="major text-decoration-underline"), class_="top"),
+            tags.p("Are you ready to elevate your style and comfort game? Look no further because the icon is here!", class_="minor"),
+            tags.div(
+                tags.p(
+                    "Our Iconic sneakers are now available at unbeatable price, making it the perfect time to ",
+                    tags.span("upgrade your footwear collection", class_="text-decoration-underline major"), ".",
+                    class_="major-line text-uppercase",
+                ),
+                class_="container"
+            ),
+
+            class_="description",
+        ),
+
+        class_="top",
+    ),
+
+    tags.div(
+        tags.p("Visit Our Store"),
+        tags.a(
+            "Discover More",
+             tags.i(class_="bi bi-chevron-right"),
+             href="#",
+             class_="icon-link"
+        ),
+
+        class_="bottom"
+    ),
+
+    class_="h-100 p-5 rounded-3 pas-container"
+)
+```
+:::
+
+<!-------- End of Grid ------------------------------------------------------------------------->
+:::
+
+<div class="ab-divider"></div>
+
+<!-------- Answer --------------------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+```{python}
+
+tags.div(
+    tags.p(
+        """ 
+        A compelling approach that enables us to provide a precise response to the aforementioned query is to conduct an A/B test. A/B test also known as split test, where is a method used in statistics and marketing to assess and compare the performance of two variations of a product or item, typically labeled as "A" and "B" and they are grouped into a test and control group. 
+        """,
+
+        class_="answer exp-text-color"
+    ),
+
+    tags.p(
+        """
+        The objective of A/B test is to determine which variation is more effective in achieving a specific goal, such as increasing conversions or revenue. A/B test is a powerful tool to detect if a strategy works or not because it allows you to make data-driven decisions. By comparing two variations under controlled conditions, changes can be objectively assessed to determine whether they lead to improvements or not." This approach minimizes guesswork and maximizes the likelihood of achieving the desired outcomes.
+        """,
+
+        class_="intro-summary exp-text-color mt-1"
+    ),
+
+)
+
+```
+
+:::
+<!-------- End of Answer ----------------------------------------------------------------------------------------->
+
+
+
+<div class="ab-divider"></div>
+
+
+
+
+::: {.px-4 .px-md-5 .py-4}
+
+<h4 class="display-6 mb-2">Go To</h4>
+
+```{python}
+
+tags.div(
+    info_card(
+        tags.p(
+            """
+            The following links provide a structured path to navigate through the report and access the information gathered during the analysis.
+            """,
+            tags.br(), tags.br(),
+            tags.span("Metric & Analysis Page: ", class_="f-weight"),
+            """ 
+            Here, you'll discover key indicators and summaries of the experiment's performance, the details of different strategies, extracting insights that shed light on group performance under various conditions.
+            """,
+            tags.br(),tags.br(),
+            tags.span("A/B Test Page: ", class_="f-weight"),
+            """
+            This page offers a comprehensive overview of the significance of the insights obtained from the analyses on the Metric & Analysis  page. Statistical tests and resampling techniques were used to dive deeper into our findings.
+            """,
+            tags.br(),tags.br(),
+            tags.span("Analysis Notebook: ", class_="f-weight"),
+            """
+            If you'd like to explore the entire analysis process, including code and detailed steps, follow the link to the Python notebook.
+            """,
+
+            class_="link-description"
+        ),
+
+        "info-lg"
+    ),
+
+    class_="mb-5"
+)
+
+```
+
+::: {.grid}
+
+
+::: {.g-col-12 .g-col-md-3 .page-link-container}
+
+```{python}
+
+page_link("Metric & Analysis", "metric.html", "bi bi-easel3-fill")
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-3 .page-link-container}
+
+```{python}
+
+page_link("A/B Test", "test.html", "bi bi-hexagon-half")
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-3 .page-link-container}
+
+```{python}
+
+page_link("Notebook", "www.github.com", "bi bi-code-slash")
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-3 .page-link-container}
+
+```{python}
+
+page_link("About", "about.html", "bi bi-file-earmark-text")
+
+```
+
+:::
+
+
+<!----- End of Grid ------------------------------------------------------------------------->
+:::
+
+:::
+
+<br>
+<br>
+
+
+
+

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.340">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>A/B Experiment – test</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-layout-custom">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+<!-- main -->
+
+
+
+<div class="px-4 px-md-5 py-4 d-flex justify-content-between align-items-center">
+<h4 class="display-5">
+A/B Testing
+</h4><h4>
+<a class="home-link" href="index.html">Home</a>
+</h4></div>
+<div class="px-4 px-md-5 py-4">
+<p class="exp-text-color">
+After a thorough exploration and summary of the performance metrics of both groups on the metrics page, we will leverage these insights to conduct the necessary tests. This will enable us to comprehensively assess the significance of these insights in relation to the conversion rates of both groups.
+</p>
+</div>
+<div class="ab-divider">
+
+</div>
+<!---- Hypothesis section ------------------------------------------------------------------------------->
+<div class="px-4 px-md-5 py-4">
+<div class="grid">
+<!---- Null Column -------------------------------------------------------------------------->
+<div class="g-col-12 g-col-md-6">
+<div class="cell" data-execution_count="3">
+<div class="cell-output cell-output-display" data-execution_count="3">
+<div class="h-100 p-4 text-white rounded-3 hypothesis null">
+  <div class="top text-white mb-4">
+    <p class="text-white">
+      <span class="type">Null</span><span class="hyp"> Hypothesis:</span><span class="sign"> (H0)</span>
+    </p>
+  </div>
+  <div class="bottom">
+    <div class="d-flex justify-content-start align-items-start mb-1">
+      <i class="bi bi-circle-fill pt-1 pe-1 pe-md-4"></i>
+      <p class="">
+            The null hypothesis is a statement that suggests there is no significant difference or effect caused by the change being tested.
+            </p>
+    </div>
+    <div class="d-flex justify-content-start align-items-start mb-1">
+      <i class="bi bi-circle-fill pt-1 pe-1 pe-md-4"></i>
+      <p class="bold">The conversion rate of the `Test Group (Ads)` is equal to or less than the conversion rate of the `Control Group (PSA)`.</p>
+    </div>
+    <div class="d-flex justify-content-start align-items-start">
+      <i class="bi bi-circle-fill pt-1 pe-1 pe-md-4 fw"></i>
+      <p>Symbolically, it can be expressed as H0: Conversion rate of Group A = Conversion rate of Group B.</p>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Null Column ------------------------------------------------------------------->
+<!---- Alternative Column ------------------------------------------------------------------->
+<div class="g-col-12 g-col-md-6">
+<div class="cell" data-execution_count="4">
+<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="h-100 p-4 text-white rounded-3 hypothesis alternative">
+  <div class="top text-white mb-4">
+    <p class="text-white">
+      <span class="type">Alternative</span><span class="hyp"> Hypothesis:</span><span class="sign"> (Ha)</span>
+    </p>
+  </div>
+  <div class="bottom">
+    <div class="d-flex justify-content-start align-items-start mb-1">
+      <i class="bi bi-circle-fill pt-1 pe-1 pe-md-4"></i>
+      <p class="">The alternative hypothesis proposes that there is a statistically significant difference or effect resulting from the change being tested.</p>
+    </div>
+    <div class="d-flex justify-content-start align-items-start mb-1">
+      <i class="bi bi-circle-fill pt-1 pe-1 pe-md-4"></i>
+      <p class="bold">The conversion rate of the `Test Group (Ads)` is significantly greater that the conversion rate of the `Control Group (PSA)`.</p>
+    </div>
+    <div class="d-flex justify-content-start align-items-start">
+      <i class="bi bi-circle-fill pt-1 pe-1 pe-md-4"></i>
+      <p>Symbolically, it can be expressed as Ha: Conversion rate of Group A &gt; Conversion rate of Group B.</p>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Alternative Column ------------------------------------------------------------>
+</div>
+<!---- End of Grid --------------------------------------------------------------------------------->
+</div>
+<!---- End of Hypothesis section --------------------------------------------------------------------------->
+<div class="ab-divider">
+
+</div>
+<!---- Mean section ---------------------------------------------------------------------------------------->
+<div class="px-4 px-md-5 py-4">
+<h3 class="display-6 mb-4">
+Conversion Rate
+</h3>
+<div class="grid">
+<div class="g-col-12 g-col-md-6">
+<div class="cell" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="h-100 p-3 my-0 mx-auto mx-md-0 mean">
+  <div class="d-flex justify-content-around align-items-center mb-4 ab-row test">
+    <div class="icon-container">
+      <svg viewbox="0 0 448 512" preserveaspectratio="none" aria-hidden="true" role="img" style="fill:currentColor;height:2.5rem;width:2.19rem;margin-left:0;margin-right:0;position:relative;vertical-align:-0.125em;font-size:inherit;overflow:visible;">        <path d="M253.5 51.7C248.6 39.8 236.9 32 224 32s-24.6 7.8-29.5 19.7l-120 288-40 96c-6.8 16.3 .9 35 17.2 41.8s35-.9 41.8-17.2L125.3 384H322.7l31.8 76.3c6.8 16.3 25.5 24 41.8 17.2s24-25.5 17.2-41.8l-40-96-120-288zM296 320H152l72-172.8L296 320z"></path></svg>
+    </div>
+    <div class="vertical-divider"></div>
+    <div class="values">
+      <p>
+        Mean: <span>0.026</span>
+      </p>
+      <p>
+        Standard Deviation: <span>0.158</span>
+      </p>
+    </div>
+  </div>
+  <div class="d-flex justify-content-around align-items-center ab-row control">
+    <div class="icon-container">
+      <svg viewbox="0 0 320 512" preserveaspectratio="none" aria-hidden="true" role="img" style="fill:currentColor;height:2.5rem;width:1.56rem;margin-left:0;margin-right:0;position:relative;vertical-align:-0.125em;font-size:inherit;overflow:visible;">        <path d="M32 32C14.3 32 0 46.3 0 64V256 448c0 17.7 14.3 32 32 32H192c70.7 0 128-57.3 128-128c0-46.5-24.8-87.3-62-109.7c18.7-22.3 30-51 30-82.3c0-70.7-57.3-128-128-128H32zM160 224H64V96h96c35.3 0 64 28.7 64 64s-28.7 64-64 64zM64 288h96 32c35.3 0 64 28.7 64 64s-28.7 64-64 64H64V288z"></path></svg>
+    </div>
+    <div class="vertical-divider"></div>
+    <div class="values">
+      <p>
+        Mean: <span>0.018</span>
+      </p>
+      <p>
+        Standard Deviation: <span>0.132</span>
+      </p>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+<div class="g-col-12 g-col-md-6">
+<div class="cell" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="info-container">
+  <div class="top">
+    <div class="icon-container">
+      <i class="bi bi-info-circle"></i>
+    </div>
+  </div>
+  <div class="text">
+    <p class="summary-text">
+       
+        Following the strategic shift from a long-standing Public Service Announcement (PSA) to a new advertising campaign, After conducted an analysis of the impact on conversion. In the A (test) group, consisting of users exposed to the ads, we observed an encouraging average conversion rate of 0.026, accompanied by a standard deviation of  0.158. This group's response showcases the potential of our new approach.
+        <br>
+        Meanwhile, the B (control) group, comprising users who continued to view the PSA, exhibited an average conversion of 0.018, with a standard deviation of 0.132.
+        
+    </p>
+  </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Grid --------------------------------------------------------------------------------->
+<div class="cell" data-execution_count="7">
+<div class="cell-output cell-output-display" data-execution_count="7">
+<div class="mt-2 mt-md-4">
+  <p class="exp-text-color">
+        These insights clarify the distinct performance of both groups, emphasizing the significance of the company's strategic shift in the pursuit of heightened sales. Analyzing these results, it's clear that the company's advertising efforts have set them on a path toward greater success and engagement with their user base.
+        </p>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Mean section ---------------------------------------------------------------------------------->
+<div class="ab-divider">
+
+</div>
+<!---- Bootstrap section ------------------------------------------------------------------------------------->
+<div class="px-4 px-md-5 py-4">
+<h3 class="display-6 mb-3">
+Sample (Bootstrap)
+</h3>
+<div class="cell" data-execution_count="8">
+<div class="cell-output cell-output-display" data-execution_count="8">
+<div class="mb-5">
+  <p class="exp-text-color">
+    Evidently, there is a substantial disparity in the sample size between the group exposed to the advertisement <span><a href="metric.html">see metric page</a></span>, comprising
+          96% of the total, and the group that viewed the PSA, which consitutes a mere 4%. When there is such an imbalance in sample size between experimental and control groups, it can potentially introduce several statistical analysis challenges. 
+        
+  </p>
+  <p class="exp-text-color">
+        These imbalanced sample sizes can impact the statistical power of the analysis and the precision of the estimates. Specifically, the group with the larger sample size is likely to yield more precise estimates compared to the group with the smaller sample size. Therefore, in this scenario, it becomes crucial to consider strategies with approprate statistical techniques capable of addressing imbalanced sample size, including weighted analysis or resampling methods like bootstrapping.
+        </p>
+</div>
+</div>
+</div>
+<div class="grid">
+<!---- Test Group ------------------------------------------------------------------------------------->
+<div class="g-col-12 g-col-md-6">
+<div class="cell" data-cache="true" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<p><img src="test_files/figure-html/cell-11-output-1.png" class="img-fluid" alt="A line plot on the distribution of the sampled test group"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>&lt;Figure Size: (800 x 500)&gt;</code></pre>
+</div>
+</div>
+</div>
+<!---- Control Group ------------------------------------------------------------------------------------->
+<div class="g-col-12 g-col-md-6">
+<div class="cell" data-cache="true" data-execution_count="11">
+<div class="cell-output cell-output-display">
+<p><img src="test_files/figure-html/cell-12-output-1.png" class="img-fluid" alt="A line plot on the distribution of the sampled control group"></p>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="11">
+<pre><code>&lt;Figure Size: (800 x 500)&gt;</code></pre>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Grid --------------------------------------------------------------------------------->
+</div>
+<!---- End of Bootstrap section ------------------------------------------------------------------------------->
+<div class="ab-divider">
+
+</div>
+<!---- Discussion section ------------------------------------------------------------------------------------->
+<div class="px-4 px-md-5 py-4">
+<div class="cell" data-execution_count="12">
+<div class="cell-output cell-output-display" data-execution_count="12">
+<div class="info-container">
+  <div class="top">
+    <div class="icon-container">
+      <i class="bi bi-info-circle"></i>
+    </div>
+  </div>
+  <div class="text">
+    <p class="summary-text">
+      
+        Following the creation of numerous bootstrap samples and subsequent calculation of average conversion rates for both the test and control groups, an examination of the depicted distributions and density plots reveals a characteristic bell curve pattern, strongly suggesting a normal distribution.
+        <br>
+        To further validate the normality assumption of our samples, a Shapiro-Wilk test was conducted. This test is employed to assess whether the test and control conversion samples adheres to a normal distribution. In this context, the null hypothesis posits that the data follows a normal distribution, while the alternative hypothesis suggests otherwise.
+        <br>
+        The results of the test yielded p-values of 0.38 for the test group and 0.84 for the control group samples, both of which surpass the significance level of 0.05. Consequently, we retain the null hypothesis, signifying that the sampled distributions exhibit normality.
+        <br>
+        This affirmation allows us to confidently apply statistical tests, as they rely on the fundamental assumption of normality.
+        
+    </p>
+  </div>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Discussion section ------------------------------------------------------------------------------->
+<div class="ab-divider">
+
+</div>
+<!---- Test section -------------------------------------------------------------------------------------------->
+<div class="px-4 px-md-5 py-4">
+<h3 class="display-6 mb-5">
+T-test
+</h3>
+<div class="grid">
+<!---- Output column ------------------------------------------------------------------>
+<div class="g-col-12 g-col-md-4">
+<div class="cell" data-execution_count="14">
+<div class="cell-output cell-output-display" data-execution_count="14">
+<div class="t-test">
+  <div class="tt-row">
+    <div class="title">
+      <p>Test-statistics:</p>
+    </div>
+    <div class="value">
+      <p>273.901</p>
+    </div>
+  </div>
+  <div class="tt-row">
+    <div class="title">
+      <p>P-value:</p>
+    </div>
+    <div class="value">
+      <p>0.000..</p>
+    </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+<!---- Summary column ----------------------------------------------------------------->
+<div class="g-col-12 g-col-md-8">
+<p class="lead">
+</p><div class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display" data-execution_count="15">
+<div class="info-container">
+  <div class="top">
+    <div class="icon-container">
+      <i class="bi bi-info-lg"></i>
+    </div>
+  </div>
+  <div class="text">
+    <p class="summary-text lg">
+        The T-statistic of approximately 273.901 which serves as indicator of the magnitude of the difference between the test and control groups is high enough, indicating a subtantial difference between the groups. While the P-value which is &lt; 0.05 (significate level), is exceptionally low small, signifying an extremely low likelihood of observing this level of difference by random chance alone.
+        </p>
+  </div>
+</div>
+</div>
+</div>
+<p></p>
+</div>
+</div>
+<!---- End of Grid --------------------------------------------------------------------------------->
+</div>
+<!---- End of Test section ------------------------------------------------------------------------------------->
+<p><br> <br></p>
+<!---- Communication section ----------------------------------------------------------------------------------->
+<div class="ab-divider">
+
+</div>
+<div class="px-4 px-md-5 py-4">
+<div class="cell" data-execution_count="16">
+<div class="cell-output cell-output-display" data-execution_count="16">
+<div class="evaluation">
+  <h3 class="display-6 mb-3">Evaluation</h3>
+  <div class="row-item mb-1">
+    <i class="bi bi-tag-fill"></i>
+    <p class="exp-text-color">
+            Since the p-value is significantly less than the chosen significance level (0.05), the null hypothesis is decisively rejected.
+            </p>
+  </div>
+  <div class="row-item mb-2">
+    <i class="bi bi-tag-fill alt"></i>
+    <p class="f-weight exp-text-color">
+            This provides strong evidence in favor of the alternative hypothesis, indicating that there is a statistically significant difference between the test group and the control group being compared.
+            </p>
+  </div>
+  <p class="mt-1 exp-text-color">
+    
+        To summarize this, the t-test results reveal a statistically significant difference between the test (users with Ads views) and control group (users with PSA views), with the t-statistic and p-value pointing to a subtantial distinction.
+        <span class="f-weight exp-text-color">
+            This indicates that the advertisement has a significant impact on the conversion rate compared to the public service announcement.
+            </span>
+  </p>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="17">
+<div class="cell-output cell-output-display" data-execution_count="17">
+<div class="recommendation">
+  <div class="header">
+    <h3 class="display-6 text-white mb-3 title">Recommendation</h3>
+    <div class="icon-container">
+      <i class="bi bi-lightbulb"></i>
+    </div>
+  </div>
+  <p class="mb-2">
+        Following the evaluation of the significance indicating a higher conversion rate for the ads, here are three key recommendations:
+        </p>
+  <div class="item">
+    <p>
+      <i class="bi bi-tag space"></i><span class="f-weight">Optimize Ad Placement Strategy:</span>
+    </p>
+    <p>
+            The analysis indicates that the advertisement significantly outperforms the PSA in terms of conversion rate. To maximize this advantage, the company should consider strategic placement of ads during peak user engagement periods, based on the insights gathered regarding daily and hourly views. By aligning ad exposure with when users are most active, the company can enhance the chances of conversions and improve ROI.
+            </p>
+  </div>
+  <div class="item">
+    <p>
+      <i class="bi bi-tag space"></i><span class="f-weight">Segmentation for Targeted Marketing:</span>
+    </p>
+    <p>
+            Identify user groups that responded exceptionally well to the ads and tailor marketing strategies specifically for them. Understanding the demographics and behaviors of these high-conversion groups can help refine the message and target, thus boosting conversion rates.
+            </p>
+  </div>
+  <div class="item">
+    <p>
+      <i class="bi bi-tag space"></i><span class="f-weight">Continuous Monitoring and Adaptation:</span>
+    </p>
+    <p>
+            While the analysis provides compelling evidence of the ads' positive impact, to maintain and build upon these gains, it's crucial for the company to implement continuous monitoring of user behavior and adapt marketing strategies accordingly. Stay agile in responding to changing trends, user preferences, and competition to ensure sustained growth in conversion rates.
+            </p>
+  </div>
+  <p class="mt-2">
+        By implementing these recommendations, success in the advertising efforts can be capitalized and proper foundation layed for ongoing improvements and enhanced conversion rates.
+        </p>
+</div>
+</div>
+</div>
+<p><br> <br> <br></p>
+<!---- Navigation Links ----------------------------------------------------------------------------->
+<div class="grid">
+<div class="g-col-12 g-col-md-6 page-link-container">
+<div class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display" data-execution_count="18">
+<div class="link-container">
+  <a href="metric.html" class="page-link"><i class="bi bi-easel3-fill"></i>
+    <p class="text-decoration-underline">Metric &amp; Analysis</p></a>
+</div>
+</div>
+</div>
+</div>
+<div class="g-col-12 g-col-md-6 page-link-container">
+<div class="cell" data-execution_count="19">
+<div class="cell-output cell-output-display" data-execution_count="19">
+<div class="link-container">
+  <a href="about.html" class="page-link"><i class="bi bi-file-earmark-text"></i>
+    <p class="text-decoration-underline">About</p></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!---- End of Navigation Links ----------------------------------------------------------------------->
+</div>
+<!---- End of Communication section ------------------------------------------------------------------------------>
+<p><br></p>
+
+
+
+
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

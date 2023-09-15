@@ -1,0 +1,742 @@
+---
+echo: false
+jupyter: python3
+execute: 
+  enabled: true
+format: 
+  html: 
+    fig-width: 8
+    fig-height: 6
+---
+
+
+```{python}
+from pandas import DataFrame, read_csv, NamedAgg
+from numpy import where
+
+import plotly.io as pio
+from htmltools import tags
+```
+
+```{python}
+
+from c_function import *
+
+```
+
+```{python}
+
+pio.templates.default = "plotly_white"
+pio.renderers.default = "plotly_mimetype+notebook_connected"
+
+```
+
+
+```{python}
+#| message: false
+#| warning: false
+
+df = read_csv("data/marketing_AB.csv")
+
+df = clean_data(df)
+
+```
+
+
+<div class='px-4 px-md-5 py-4 d-flex justify-content-between align-items-center'>
+ <h4 class="display-5">Metric</h4>
+ <a class="home-link" href="index.html">Home</a>
+</div>
+
+
+::: {.px-4 .px-md-5 .py-4}
+
+```{python}
+
+tags.div(
+    tags.p(
+        "To assess the impact of the product advertisement on the conversation rate, we must establish clear definitions for the A and B groups:",
+
+        class_="mb-2 exp-text-color"
+    ),
+    
+    tags.div(
+        tags.i(class_="bi bi-tag"),
+        tags.p("The A group, also known as the test group, comprises users who viewed the advertisement.", class_="exp-text-color"),
+        class_="list-point"
+    ),
+
+    tags.div(
+        tags.i(class_="bi bi-tag"),
+        tags.p(
+            "The B group, known as the control group in our context, comprises users who did not encounter the advertisement but continued to view the public service announcement (PSA).",
+
+            class_="exp-text-color"
+        ),
+        class_="list-point"
+    ),
+
+    tags.p("This distinction between the two groups is essential for our evaluation.", class_="mt-2"),
+
+    class_="mt-distinction"
+)
+
+```
+
+:::
+
+
+<div class="ab-divider"></div>
+
+
+::: {.grid .px-4 .px-md-5 .py-4}
+
+```{python}
+
+c_df = df.copy()
+
+c_df = c_df.assign(
+    group = where(c_df["group"] == "ad", "Ads", "PSA"),
+    converted = where(c_df["converted"] == 1, "Yes", "No")
+)
+
+```
+
+::: {.g-col-12 .g-col-md-4}
+
+```{python}
+
+total_users = df["user_id"].nunique()
+
+user_number_card(
+    "all", 
+    tags.p(tags.span("Total"), " number of users involved in the experiment.", class_="header-text"),
+    total_users, 
+    100
+)
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-4}
+
+```{python}
+
+temp = (
+    c_df["group"]
+        .value_counts()
+        .reset_index()
+        .assign(percentage = lambda _: round((_["count"] / _["count"].sum())*100, 3) )
+)
+
+ads_number =  temp.query("group == 'Ads'")
+ads_users = ads_number["count"].values.tolist()[0]
+ads_users_percent = ads_number["percentage"].values.tolist()[0]
+
+user_number_card(
+    "test", 
+    tags.p("Total number of users in the", tags.span(" Test group"), ".", class_="header-text"),
+    ads_users, 
+    ads_users_percent
+)
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-4}
+
+```{python}
+
+psa_number =  temp.query("group == 'PSA'")
+psa_users = psa_number["count"].values.tolist()[0]
+psa_users_percent = psa_number["percentage"].values.tolist()[0]
+
+user_number_card(
+    "control", 
+    tags.p("Total number of users in the", tags.span(" Control group"), ".", class_="header-text"),
+    psa_users, 
+    psa_users_percent
+)
+
+```
+
+:::
+
+<!---- User Count -------------------------------------------------------------------------->
+:::
+
+
+<div class="ab-divider"></div>
+
+
+<!----- Conversion Section ------------------------------------------------------------------------------------>
+::: {.px-4 .px-md-5 .py-4}
+
+<h4 class="display-6 mb-5">User Conversion</h4>
+
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+temp = (
+    c_df["converted"]
+     .value_counts()
+     .reset_index()
+     .assign(percentage = lambda _: round((_["count"] / _["count"].sum())* 100, 2))
+     .query("converted == 'Yes'")
+)
+
+
+all_convered_count = extract_value(temp, "count")
+all_converted_percentage = extract_value(temp, "percentage")
+
+all_converted_rate = round((df["converted"].sum() / df.shape[0]) * 100, 2)
+
+conversion_card(
+    card_type="all",
+    title="Total Users",
+    value=all_convered_count,
+    percentage=all_converted_percentage,
+    rate=all_converted_rate
+)
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    info_card(
+        tags.p(
+            """ 
+            For the experiment conducted on the company's community platform, a substantial user base was engaged, totaling 588,101 participants. Out of this sizable user pool, a relatively modest figure of 14,843 users achieved successful conversions, resulting in a conversion rate of 2.52%. This percentage highlights the portion of users who actively completed purchases during the experiment period, providing valuable insights into the effectiveness of the company's strategies in driving both conversions and revenue.
+            """,
+            class_="summary-text"
+        ),
+
+        "info-circle"
+    )
+)
+
+```
+
+:::
+
+:::
+
+
+:::
+<!------ End of all user conversion ---------------------------------------------------------------------------->
+
+
+<div class="ab-divider"></div>
+
+```{python}
+
+temp = (
+    c_df
+        .groupby("group")["converted"]
+        .value_counts()
+        .reset_index()
+        .assign(percentage = lambda _: round((_["count"] / _["count"].sum()) * 100, 2))
+)
+```
+
+<!------ Test | Ads Group -------------------------------------------------------------------------------------->
+::: {.grid .px-4 .px-md-5 .py-4}
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+ads_df_convered = temp.query("group == 'Ads' & converted == 'Yes'")
+
+ads_converted_count = extract_value(ads_df_convered, "count") 
+ads_converted_percentage = extract_value(ads_df_convered, "percentage") 
+
+ads_df = df.query("group == 'ad'")
+ads_conversion_rate = round((ads_df["converted"].sum() / ads_df.shape[0]) * 100, 2)
+
+conversion_card(
+    card_type="test",
+    title="Test Group",
+    value=ads_converted_count,
+    percentage=ads_converted_percentage,
+    rate=ads_conversion_rate
+)
+
+```
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    info_card(
+        tags.p(
+            """ 
+            Out of the total user base of 588,101 participants in the experiment, a substantial majority, totaling 564,577 users, were randomly selected and given the opportunity to view the advertisement. This group represents approximately 96% of the total participants and is considered the test group, forming the primary basis for comparison against the control group.
+            """,
+            tags.br(),
+            """
+            Within this test group, 14,423 users successfully completed conversions, resulting in an approximate conversion rate of 2.55%. This percentage corresponds to roughly 2.45% of the total users who viewed the advertisement.
+            """,
+            class_="summary-text"
+        ),
+
+        "info-circle"
+    )
+)
+
+```
+
+:::
+
+:::
+<!------ End of Test user conversion ---------------------------------------------------------------------->
+
+<div class="ab-divider"></div>
+
+
+<!------ Control | PSA Group ------------------------------------------------------------------------------->
+::: {.grid .px-4 .px-md-5 .py-4}
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+psa_df_convered = temp.query("group == 'PSA' & converted == 'Yes'")
+
+psa_converted_count = extract_value(psa_df_convered, "count") 
+psa_converted_percentage = extract_value(psa_df_convered, "percentage") 
+
+psa_df = df.query("group == 'psa'")
+psa_conversion_rate = round((psa_df["converted"].sum() / psa_df.shape[0]) * 100, 2)
+
+conversion_card(
+    card_type="control",
+    title="Control Group",
+    value=psa_converted_count,
+    percentage=psa_converted_percentage,
+    rate=psa_conversion_rate
+)
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-6}
+
+```{python}
+
+tags.div(
+    info_card(
+        tags.p(
+            """ 
+            Among the participants, a smaller subset, consisting of 23,524 users were exposed to a Public Service Announcement (PSA). This group accounts for approximately 4% of the total user base and is designated as the Control group.
+            """,
+            tags.br(),
+            """
+            Within the Control group, 420 users successfully completed conversions, resulting in a conversion rate of approximately 1.79%. 
+            """,
+            tags.br(),
+            """
+            The Control group plays a pivotal role in our experiment, serving as a benchmark against which we can assess changes and improvements. This role enhances our comprehension of the experiment's overall impact on user behavior and conversions.
+            """,
+            class_="summary-text"
+        ),
+
+        "info-circle"
+    )
+)
+
+```
+
+:::
+
+:::
+<!------ End of Control user conversion -------------------------------------------------------------------->
+
+<!----- End of Conversion section ------------------------------------------------------------------------------>
+
+
+
+<div class="ab-divider"></div>
+
+
+
+<!------ View Section ----------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+<h4 class="display-6 pb-4">User Views</h4>
+<h6 class="lead pb-2">Views Per Day</h6>
+
+::: {.grid}
+
+```{python}
+
+ads_temp = group_views_count(df, "most_views_day", "ad") 
+psa_temp = group_views_count(df, "most_views_day", 'psa')
+
+```
+
+<!------ Test Section ----------------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+<div class="tabset">
+<div class="tabs" data-tabset="day-ads">
+<a class="tab-link active" data-tab="day-ads-count">Count</a>
+<a class="tab-link" data-tab="day-ads-conversion">Conversion</a>
+<a class="tab-link" data-tab="day-ads-table">Table</a>
+</div>
+
+<div id="day-ads-count" class="tab-content active">
+<div>
+
+```{python}
+
+plot_group_views_count(ads_temp, "most_views_day", "test")
+
+```
+
+</div>
+</div>
+<div id="day-ads-conversion" class="tab-content">
+<div>
+
+```{python}
+
+plot_conversion_rate_views(ads_temp, "most_views_day", "test")
+
+```
+
+</div>
+</div>
+<div id="day-ads-table" class="tab-content">
+<div>
+
+```{python}
+
+clean_column_names(ads_temp)
+
+```
+
+</div>
+</div>
+
+</div>
+
+
+:::
+<!------ End Test Section ------------------------------------------------------------------------------->
+
+
+
+<!------ Control Section -------------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+<div class="tabset">
+<div class="tabs" data-tabset="day-psa">
+<a class="tab-link active" data-tab="day-psa-count">Count</a>
+<a class="tab-link" data-tab="day-psa-conversion">Conversion</a>
+<a class="tab-link" data-tab="day-psa-table">Table</a>
+</div>
+
+<div id="day-psa-count" class="tab-content active">
+<div>
+
+```{python}
+
+plot_group_views_count(psa_temp, "most_views_day", "control")
+
+```
+
+</div>
+</div>
+<div id="day-psa-conversion" class="tab-content">
+<div>
+
+```{python}
+
+plot_conversion_rate_views(psa_temp, "most_views_day", "control")
+
+```
+
+</div>
+</div>
+<div id="day-psa-table" class="tab-content">
+<div>
+
+```{python}
+
+clean_column_names(psa_temp)
+
+```
+
+</div>
+</div>
+
+</div>
+
+
+:::
+<!------ End Control Section ------------------------------------------------------------------------>
+
+:::
+
+```{python}
+
+info_card(
+    tags.p(
+        """
+        In the analysis of the highest number of ads and PSA views by day, several noteworthy patterns emerge. Friday emerges as the day with the highest number of users viewing the most ads in a single day, accounting for approximately 15.72% of users, closely followed by Monday and Sunday. However, despite its high ad views, Friday records one of the lowest conversion rates at 2.25%. On the contrary, Monday, with a substantial number of users who converted, achieves the highest conversion rate at 3.32%. Tuesday, despite low ad views, surprisingly secures the second-highest conversion rate at 3.04%.
+        """,
+        tags.br(),
+        """
+        In terms of PSA views, Thursday takes the lead, closely followed by Friday, each capturing around 16% of users. Monday and Wednesday also exhibit significant engagement. Notably, Saturday registers the lowest user activity for PSA views, with Tuesday trailing closely behind. The conversion rates for PSA views follow a slightly different trend, with Monday leading in conversions, followed by Thursday, and Saturday recording the lowest number of users who converted despite its view count.
+        """,
+        tags.br(),
+        """
+        These insights provide valuable information about user engagement patterns for each day of the week and how they relate to conversion rates.
+        """,
+        class_="summary-text"
+    ),
+
+    "info-circle"
+)
+
+```
+
+:::
+<!------ End of Day View Section ------------------------------------------------------------------------------->
+
+
+<div class="ab-divider"></div>
+
+
+
+
+
+<!------ Hour View Section ------------------------------------------------------------------------------------->
+::: {.px-4 .px-md-5 .py-4}
+
+<h6 class="lead pb-2">Views Per Hour</h6>
+
+::: {.grid}
+
+```{python}
+
+ads_temp = group_views_count(df, "most_views_hour", "ad") 
+psa_temp = group_views_count(df, "most_views_hour", 'psa')
+
+```
+
+<!------ Test Section ----------------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+<div class="tabset">
+<div class="tabs" data-tabset="hour-ads">
+<a class="tab-link active" data-tab="hour-ads-count">Count</a>
+<a class="tab-link" data-tab="hour-ads-conversion">Conversion</a>
+<a class="tab-link" data-tab="hour-ads-table">Table</a>
+</div>
+
+<div id="hour-ads-count" class="tab-content active">
+<div>
+
+```{python}
+
+plot_group_views_count(ads_temp,  "most_views_hour", "test")
+
+```
+
+</div>
+</div>
+<div id="hour-ads-conversion" class="tab-content">
+<div>
+
+```{python}
+
+plot_conversion_rate_views(ads_temp,  "most_views_hour", "test")
+
+```
+
+</div>
+</div>
+<div id="hour-ads-table" class="tab-content">
+<div class="overflow-scroll table-col">
+
+```{python}
+
+clean_column_names(ads_temp)
+
+```
+
+</div>
+</div>
+
+</div>
+
+
+:::
+<!------ End Test Section ------------------------------------------------------------------------------->
+
+
+
+<!------ Control Section -------------------------------------------------------------------------------->
+::: {.g-col-12 .g-col-md-6}
+
+<div class="tabset">
+<div class="tabs" data-tabset="hour-psa">
+<a class="tab-link active" data-tab="hour-psa-count">Count</a>
+<a class="tab-link" data-tab="hour-psa-conversion">Conversion</a>
+<a class="tab-link" data-tab="hour-psa-table">Table</a>
+</div>
+
+<div id="hour-psa-count" class="tab-content active">
+<div>
+
+```{python}
+
+plot_group_views_count(psa_temp, "most_views_hour", "control")
+
+```
+
+</div>
+</div>
+<div id="hour-psa-conversion" class="tab-content">
+<div>
+
+```{python}
+
+plot_conversion_rate_views(psa_temp, "most_views_hour", "control")
+
+```
+
+</div>
+</div>
+<div id="hour-psa-table" class="tab-content">
+<div class="overflow-scroll table-col">
+
+```{python}
+
+clean_column_names(psa_temp)
+
+```
+
+</div>
+</div>
+
+</div>
+
+
+:::
+<!------ End Control Section ---------------------------------------------------------------------------->
+
+:::
+
+```{python}
+
+info_card(
+    tags.p(
+        """
+        In the examination of the highest number of ads views per hour, distinct patterns emerge throughout the day. User engagement spikes considerably starting from 8 am and peaks between 11 am and 3 pm, with an average of 44,301 users during these hours. Conversely, the period from midnight to 7 am sees the lowest number of users, averaging approximately 3,407 users, as expected. As for conversion rates during these hours, a compelling narrative unfolds. From 9 am onward, there's a consistent upward trend in conversion rates, reaching its zenith between 2 pm and 4 pm. Subsequently, conversion rates start to decline from 5 pm to 7 pm and again from 8 pm to 11 pm. These fluctuations in conversion rates align with the varying levels of user activity during these hours, revealing when users are most and least likely to convert.
+        """,
+        class_="summary-text"
+    ),
+    "info-circle"
+)
+
+```
+
+
+<br>
+<br>
+
+<!---- Navigation Links ----------------------------------------------------------------------------->
+::: {.grid}
+
+::: {.g-col-12 .g-col-md-6 .page-link-container}
+
+```{python}
+
+page_link("Home", "index.html", "bi bi-house")
+
+```
+
+:::
+
+::: {.g-col-12 .g-col-md-6 .page-link-container}
+
+```{python}
+
+page_link("A/B Test", "test.html", "bi bi-hexagon-half")
+
+```
+
+:::
+
+:::
+<!---- End of Navigation Links ----------------------------------------------------------------------->
+
+<br>
+
+:::
+<!---- End of Days View Section ------------------------------------------------------------------------->
+
+
+<!------ Scripts ---------------------------------------------------------------------------------------->
+<script type="application/javascript">
+function showTab(tabsetId, tabId) {
+
+    const tabLinks = document.querySelectorAll(`[data-tabset="${tabsetId}"] .tab-link`);
+    tabLinks.forEach(link => {
+        link.classList.remove("active");
+    });
+
+
+    const tabContents = document.querySelectorAll(`[data-tabset="${tabsetId}"] ~ .tab-content`);
+    tabContents.forEach(content => {
+    //    console.log(content);
+       content.classList.remove("active");
+    });
+
+    const selectedTab = document.getElementById(tabId);
+    if (selectedTab) {
+        selectedTab.classList.add("active");
+
+        const selectedLink = document.querySelector(`[data-tabset="${tabsetId}"] [data-tab="${tabId}"]`);
+        if (selectedLink) {
+            selectedLink.classList.add("active");
+        }
+    }
+    
+}
+
+// Add event listeners for tab clicks in each tabset
+const tabsets = document.querySelectorAll(".tabset");
+tabsets.forEach(tabset => {
+
+    const tabLinks = tabset.querySelectorAll(".tab-link");
+    tabLinks.forEach(link => {
+
+        link.addEventListener("click", () => {
+
+            const tabId = link.getAttribute("data-tab");
+            const tabsetId = tabset.querySelector(".tabs").getAttribute("data-tabset");
+            showTab(tabsetId, tabId);
+        });
+
+    });
+
+});
+
+</script>
