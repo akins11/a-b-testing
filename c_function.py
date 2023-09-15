@@ -390,7 +390,7 @@ def plot_bootstrap_samples(df: DataFrame, group: str):
         scale_y_continuous(labels = lambda l: ["{:,.0f}".format(v) for v in l]) +
         theme_minimal() +
         theme(figure_size=(8, 5))
-    )
+    ).draw()
 
     return f_plt
 
