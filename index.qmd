@@ -333,7 +333,7 @@ page_link("A/B Test", "test.html", "bi bi-hexagon-half")
 
 ```{python}
 
-page_link("Notebook", "www.github.com", "bi bi-code-slash")
+page_link("Notebook", "https://github.com/akins11/a-b-testing/blob/main/report_analysis.ipynb", "bi bi-code-slash")
 
 ```
 
