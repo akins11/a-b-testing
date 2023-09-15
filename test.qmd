@@ -244,7 +244,7 @@ tags.div(
         class_="d-flex justify-content-around align-items-center ab-row control"
     ),
 
-    class_="h-100 p-3 my-0 mx-auto mx-md-0 mean"
+    class_="h-100 p-2 p-md-3 py-3 my-0 mx-auto mean" #mx-md-0
 )
 
 ```
